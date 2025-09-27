@@ -1,0 +1,6 @@
+# Sample raw nibble dumps (LSB→MSB), one frame per line
+# Example corresponds to 12.345 mm (dp=3, sign=+, units=mm)
+5 4 3 2 1 0 0 0  0 3 0 0 0
+
+# Negative example: -0.500 in (dp=3, sign bit set, units=in)
+0 0 5 0 0 0 0 0  8 3 1 0 0
