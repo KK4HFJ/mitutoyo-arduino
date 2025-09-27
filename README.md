@@ -20,6 +20,7 @@ Canonical, workshop‑ready reference for reading Mitutoyo SPC (Digimatic) 52‑
 
 ## Links
 - [Original instructable with wiring and components](https://www.instructables.com/Interfacing-a-Digital-Micrometer-to-a-Microcontrol/)
+- [Interface Board Available](https://oshpark.com/shared_projects/EMwqQFNh)- 
 
 ## License
 MIT © 2025 Steve Spence
