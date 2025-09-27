@@ -17,5 +17,9 @@ Canonical, workshop‑ready reference for reading Mitutoyo SPC (Digimatic) 52‑
 - `docs/Mitutoyo_52bit_Complete_Guide_v2.pdf` — story, protocol, diagrams, worked example, full code.
 - `docs/Mitutoyo_Arduino_Pinout_OnePager.pdf` — wiring cheat‑sheet.
 
+
+## Links
+- `https://www.instructables.com/Interfacing-a-Digital-Micrometer-to-a-Microcontrol/` - Original instructable with wiring and components.
+
 ## License
 MIT © 2025 Steve Spence
