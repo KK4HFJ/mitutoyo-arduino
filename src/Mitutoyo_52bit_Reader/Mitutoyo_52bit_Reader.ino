@@ -10,10 +10,10 @@
     the instrument's REQ line low. Other brands' SPC outputs (e.g. 1.5 V
     Chinese calipers) need level shifting instead.
 
-  Wiring:
-    CLK  -> D2 (INT0)
-    DATA -> D4
-    REQ  -> D3 (through the transistor; optional)
+  Wiring (same pins as the original Instructable):
+    DATA -> D2
+    CLK  -> D3 (INT1)
+    REQ  -> D5 (through the transistor; optional)
     GND  -> GND
 
   Frame layout (Mitutoyo Digimatic: 13 digits d1..d13, 4 bits each,
@@ -27,9 +27,9 @@
 
 // ---- Configuration ---------------------------------------------------------
 
-constexpr uint8_t CLK_PIN  = 2;  // must be an external-interrupt pin
-constexpr uint8_t DATA_PIN = 4;
-constexpr uint8_t REQ_PIN  = 3;
+constexpr uint8_t DATA_PIN = 2;
+constexpr uint8_t CLK_PIN  = 3;  // must be an external-interrupt pin (UNO/Nano: 2 or 3)
+constexpr uint8_t REQ_PIN  = 5;
 
 // Set false if your instrument free-runs (no request needed).
 constexpr bool USE_REQ = true;
