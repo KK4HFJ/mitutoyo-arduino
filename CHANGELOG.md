@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Sketch moved to `src/Mitutoyo_52bit_Reader/` so the Arduino IDE and `arduino-cli` can open and compile it.
-- REQ assert level is configurable (`REQ_ASSERT`) for level-shifter or transistor drive.
+- REQ defaults to the Instructable's PN2222A drive (Arduino HIGH asserts) and is held for the whole frame, matching the original sketch; `REQ_ASSERT` can be set to LOW for direct drive.
 - `examples/sample_nibbles.txt` rewritten in the real frame format.
 
 ### Added

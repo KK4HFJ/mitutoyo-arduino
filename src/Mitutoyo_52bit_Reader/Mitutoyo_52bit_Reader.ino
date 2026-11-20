@@ -4,13 +4,16 @@
   - Captures one 52-bit Digimatic frame on CLK falling edges.
   - Prints the 13 raw digits and the decoded, human-readable value.
   - Optionally drives REQ to ask the instrument for a reading.
-  - IMPORTANT: use level shifting or optocouplers on the SPC lines.
-    Do NOT connect caliper lines directly to 5 V Arduino pins.
+  - Mitutoyo DATA and CK are open-collector outputs, so they go straight to
+    Arduino pins using the internal pull-ups. REQ is driven through an NPN
+    transistor (e.g. PN2222A with a 10k base resistor): Arduino HIGH pulls
+    the instrument's REQ line low. Other brands' SPC outputs (e.g. 1.5 V
+    Chinese calipers) need level shifting instead.
 
-  Wiring (Arduino side, via level shifting):
+  Wiring:
     CLK  -> D2 (INT0)
     DATA -> D4
-    REQ  -> D3 (optional output)
+    REQ  -> D3 (through the transistor; optional)
     GND  -> GND
 
   Frame layout (Mitutoyo Digimatic: 13 digits d1..d13, 4 bits each,
@@ -31,14 +34,14 @@ constexpr uint8_t REQ_PIN  = 3;
 // Set false if your instrument free-runs (no request needed).
 constexpr bool USE_REQ = true;
 
-// Pin level that asserts REQ. The instrument's REQ is active low: use LOW
-// when driving it through a level shifter, HIGH when driving it through an
-// NPN transistor that pulls the line low.
-constexpr uint8_t REQ_ASSERT = LOW;
+// Pin level that asserts REQ. The instrument's REQ is active low: HIGH when
+// driving it through an NPN transistor (standard circuit), LOW when driving
+// it directly through a level shifter.
+constexpr uint8_t REQ_ASSERT = HIGH;
 
 constexpr unsigned long SERIAL_BAUD      = 115200;
-constexpr unsigned long REQ_HOLD_MS      = 120;  // how long REQ is held asserted
 constexpr unsigned long FRAME_TIMEOUT_MS = 200;  // max wait for a full frame
+                                                 // (spec: data starts <= 94 ms after REQ)
 constexpr unsigned long LOOP_PAUSE_MS    = 60;   // pause between readings
 
 // ---- Frame format ----------------------------------------------------------
@@ -95,22 +98,21 @@ void startCapture() {
   attachInterrupt(digitalPinToInterrupt(CLK_PIN), isrClockFalling, FALLING);
 }
 
-void sendRequestPulse() {
-  if (!USE_REQ) return;
-  digitalWrite(REQ_PIN, REQ_ASSERT);
-  delay(REQ_HOLD_MS);
-  digitalWrite(REQ_PIN, !REQ_ASSERT);
+void setRequest(bool active) {
+  if (USE_REQ) digitalWrite(REQ_PIN, active ? REQ_ASSERT : !REQ_ASSERT);
 }
 
 // Returns true and fills outBits if a full frame arrived before the timeout.
+// REQ stays asserted until the frame is complete (or times out).
 bool captureOneFrame(uint64_t &outBits) {
   startCapture();
-  sendRequestPulse();
+  setRequest(true);
 
   const unsigned long t0 = millis();
   while (!frameReady && (millis() - t0) < FRAME_TIMEOUT_MS) {
     // ISR collects the bits
   }
+  setRequest(false);
   detachInterrupt(digitalPinToInterrupt(CLK_PIN));
 
   if (!frameReady) return false;
@@ -170,7 +172,7 @@ void printRawDigits(uint64_t bits) {
 void printReading(const Reading &r) {
   if (!r.valid) {
     Serial.println(F("Frame failed validation (sync/sign/BCD/decimal/unit). "
-                     "Check wiring, clock edge and level shifting."));
+                     "Check wiring and the REQ transistor."));
     return;
   }
 
@@ -202,11 +204,10 @@ void setup() {
 
   if (USE_REQ) {
     pinMode(REQ_PIN, OUTPUT);
-    digitalWrite(REQ_PIN, !REQ_ASSERT);  // idle = not requesting
+    setRequest(false);  // idle = not requesting
   }
 
   Serial.println(F("Mitutoyo 52-bit reader ready."));
-  Serial.println(F("Ensure proper isolation/level shifting for SPC lines."));
 }
 
 void loop() {

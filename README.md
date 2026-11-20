@@ -9,11 +9,11 @@ Workshop-ready reference for reading Mitutoyo SPC (Digimatic) 52-bit frames on a
 - **examples/** - sample raw frames
 
 ## Quick Start
-1. Wire the SPC lines through level shifting (CLK→D2 INT0, DATA→D4, REQ→D3 optional, GND→GND).
+1. Wire CLK→D2 (INT0), DATA→D4, GND→GND. Drive REQ from D3 through a PN2222A with a 10k base resistor (Arduino HIGH pulls REQ low), as in the [original Instructable](https://www.instructables.com/Interfacing-a-Digital-Micrometer-to-a-Microcontrol/). Mitutoyo DATA/CK are open-collector, so the Arduino's internal pull-ups are all they need.
 2. Open `src/Mitutoyo_52bit_Reader/Mitutoyo_52bit_Reader.ino` in the Arduino IDE and upload it to an UNO or Nano.
 3. Open the Serial Monitor at 115200 to see the raw digits and the decoded value.
 
-If you drive REQ through an NPN transistor rather than a level shifter, set `REQ_ASSERT` to `HIGH` in the sketch.
+If you drive REQ directly through a level shifter instead of a transistor, set `REQ_ASSERT` to `LOW` in the sketch.
 
 ## Frame Format
 
