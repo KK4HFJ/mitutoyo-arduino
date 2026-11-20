@@ -1,0 +1,9 @@
+# Build output / editor clutter
+build/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archives (release bundles belong in GitHub Releases, not the tree)
+*.zip
