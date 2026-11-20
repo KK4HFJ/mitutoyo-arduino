@@ -1,6 +1,11 @@
-# Sample raw nibble dumps (LSB→MSB), one frame per line
-# Example corresponds to 12.345 mm (dp=3, sign=+, units=mm)
-5 4 3 2 1 0 0 0  0 3 0 0 0
+# Sample raw Digimatic frames, digits d1..d13 as printed by the sketch (hex).
+# d1-d4 = F (sync) | d5 sign | d6-d11 value, MSD first | d12 decimals | d13 unit
 
-# Negative example: -0.500 in (dp=3, sign bit set, units=in)
-0 0 5 0 0 0 0 0  8 3 1 0 0
+# 12.345 mm  (sign +, value 012345, 3 decimals, mm)
+F F F F 0 0 1 2 3 4 5 3 0
+
+# 123.456 mm (example from the Mitutoyo Digimatic data-format spec)
+F F F F 0 1 2 3 4 5 6 3 0
+
+# -0.500 in  (sign -, value 000500, 3 decimals, inch)
+F F F F 8 0 0 0 5 0 0 3 1

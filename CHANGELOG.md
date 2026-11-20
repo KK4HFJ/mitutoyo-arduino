@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-11-20
+### Fixed
+- Decoder now follows the Mitutoyo Digimatic frame: d1-d4 sync (`F`), d5 sign, d6-d11 value (MSD first), d12 decimal point, d13 unit. The 1.0.0 mapping (N0-N7 digits LSD first, sign in N8) did not decode real instrument frames.
+- Frames are validated (sync, sign, BCD, decimal, unit) before a value is printed.
+- A zero fractional part printed one extra `0` (e.g. `12.0000` for 3 decimals).
+- Removed a stray `\` on the first line of the sketch.
+
+### Changed
+- Pins match the original Instructable: DATA→D2, CLK→D3 (INT1), REQ→D5 (was CLK D2, DATA D4, REQ D3 in 1.0.0).
+- Sketch moved to `src/Mitutoyo_52bit_Reader/` so the Arduino IDE and `arduino-cli` can open and compile it.
+- REQ defaults to the Instructable's PN2222A drive (Arduino HIGH asserts) and is held for the whole frame, matching the original sketch; `REQ_ASSERT` can be set to LOW for direct drive.
+- `examples/sample_nibbles.txt` rewritten in the real frame format.
+
+### Added
+- GitHub Actions compile check for UNO and Nano, and `.gitignore` (both were listed for 1.0.0 but never committed).
+
+### Removed
+- Stray `mitutoyo-arduino-repo-with-ci (1).zip` committed at the repo root.
+
 ## [1.0.0] - 2025-09-27
 ### Added
 - Initial public release of the Mitutoyo 52-bit Digimatic → Arduino reference.
